@@ -5,15 +5,6 @@ import Profile from "@components/Profile";
 import { useRouter } from "next/navigation";
 import Spinner from "@components/Spinner";
 
-export async function generateMetadata({ params }) {
-  const userData = await fetch(`/api/users/${params.id}`);
-  const user = await userData.json();
-
-  return {
-    title: `${user.username}`
-  }
-}
-
 const MyProfile = ({ params }) => {
   const [posts, setPosts] = useState([]);
   const [profileOwner, setProfileOwner] = useState({});
