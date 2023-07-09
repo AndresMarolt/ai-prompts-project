@@ -1,9 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"
 import Profile from "@components/Profile";
-import { useRouter } from "next/navigation";
 import Spinner from "@components/Spinner";
+import { toast } from 'react-toastify';
+import DeleteMsg from "@components/toastifyMessages/DeleteMsg";
 
 const MyProfile = ({ params }) => {
   const [posts, setPosts] = useState([]);
@@ -21,7 +23,6 @@ const MyProfile = ({ params }) => {
       setProfileOwner(usersData);
       setLoading(false);
     }
-
     fetchPosts();
   }, [params])
 
@@ -30,30 +31,20 @@ const MyProfile = ({ params }) => {
   }
 
   const handleDelete = async (post) => {
-    const hasConfirmed = confirm("¿Seguro que desea eliminar este prompt?");
-    if(hasConfirmed) {
-      try {
-        await fetch(`/api/prompt/${post._id.toString()}`, {
-          method: 'DELETE',
-        });
-
-        const filteredPosts = posts.filter((p) => p._id !== post._id);
-        setPosts(filteredPosts);
-      } catch (error) {
-        console.log(error);
-      }
-    }
+    toast.warn(({ closeToast }) => <DeleteMsg  posts={posts} postId={post._id} setPosts={setPosts} />);
   }
 
   if(loading) return <Spinner />
   return (
-    <Profile
-      name={profileOwner.username}
-      img={profileOwner.image}
-      data={posts}
-      handleEdit={handleEdit}
-      handleDelete={handleDelete}
-    />
+    <>
+      <Profile
+        name={profileOwner.username}
+        img={profileOwner.image}
+        data={posts}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+      />
+    </>
   )
 }
 

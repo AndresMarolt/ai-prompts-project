@@ -2,16 +2,20 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 import Form from "@components/Form";
 
 const CreatePrompt = () => {
   const router = useRouter();
-  const { data: session } = useSession();
-
   const [submitting, setIsSubmitting] = useState(false);
   const [post, setPost] = useState({ prompt: "", tag: "" });
+  const { data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+      redirect('/');
+    }
+  });
 
   const createPrompt = async (e) => {
     e.preventDefault();

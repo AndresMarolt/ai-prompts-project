@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 
 import Form from "@components/Form";
+import { useSession } from "next-auth/react";
 
 const EditPrompt = () => {
   const router = useRouter();
@@ -13,11 +14,20 @@ const EditPrompt = () => {
 
   const [submitting, setIsSubmitting] = useState(false);
   const [post, setPost] = useState({ prompt: "", tag: "" });
+  const { data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+      redirect('/');
+    }
+  });
 
   useEffect(() => {
     const getPromptDetails = async () => {
       const response = await fetch(`api/prompt/${promptId}`);
       const data = await response.json();
+      if(data?.creator._id !== session?.user.id) {
+        router.push('/')
+      }
       setPost({
         prompt: data.prompt,
         tag: data.tag

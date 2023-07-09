@@ -212,3 +212,14 @@
   @apply flex justify-between items-center;
 }
 
+.toastify_btn {
+  @apply py-1 px-3 shadow-md shadow-gray-400 
+}
+
+.toastify_btn-accept {
+  @apply bg-orange-500 text-white
+}
+
+.toastify_btn .toastify_btn-cancel {
+  /* @apply */
+}

@@ -3,29 +3,16 @@
 import { useState, useEffect } from "react"
 import PromptCard from "./PromptCard"
 import Spinner from "./Spinner"
-
-const PromptCardList = ({ data, handleTagClick }) => {
-  return (
-    <div className="mt-16 prompt_layout">
-      { 
-        data.map((post) => (
-          <PromptCard
-            key={post._id}
-            post={post}
-            handleTagClick={handleTagClick}
-          />
-        )) 
-      }
-    </div>
-  )
-}
+import { useRouter } from "next/navigation"
+import { toast } from 'react-toastify';
+import DeleteMsg from "./toastifyMessages/DeleteMsg"
 
 const Feed = () => {
-
   const [searchText, setSearchText] = useState('');
   const [posts, setPosts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -55,10 +42,18 @@ const Feed = () => {
 
   const handleTagClick = (tagName) => {
     setSearchText(tagName);
-
     const searchResult = filterPrompts(tagName);
     setSearchResults(searchResult);
   }
+
+  const handleEdit = (post) => {
+    router.push(`/update-prompt?id=${post._id}`)
+  }
+
+  const handleDelete = async (post) => {
+    console.log("ENTRA A DELETE");
+    toast.warn(({ closeToast }) => <DeleteMsg posts={posts} postId={post._id} setPosts={setPosts} />);
+  };
 
   if(loading) return <Spinner />
   return (
@@ -81,7 +76,19 @@ const Feed = () => {
             handleTagClick={handleTagClick}
           />
         ) : (
-          <PromptCardList data={posts} handleTagClick={handleTagClick} />
+          <div className="mt-16 prompt_layout">
+            {
+              posts.map((post) => (
+                <PromptCard
+                  key={post._id}
+                  post={post}
+                  handleTagClick={handleTagClick}
+                  handleDelete={() => handleDelete(post)}
+                  handleEdit={() => handleEdit(post)}
+                />
+              ))
+            }
+          </div>
         )
       }
     </section>
