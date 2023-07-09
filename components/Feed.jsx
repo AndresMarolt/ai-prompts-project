@@ -51,7 +51,6 @@ const Feed = () => {
   }
 
   const handleDelete = async (post) => {
-    console.log("ENTRA A DELETE");
     toast.warn(({ closeToast }) => <DeleteMsg posts={posts} postId={post._id} setPosts={setPosts} />);
   };
 
@@ -61,7 +60,7 @@ const Feed = () => {
       <form className="relative w-full flex-center">
         <input
           type="text" 
-          placeholder="Search for a tag or username" 
+          placeholder="Search for a prompt, tag or username" 
           value={searchText}
           onChange={handleSearchChange}
           required
@@ -71,10 +70,17 @@ const Feed = () => {
 
       {
         searchText ? (
-          <PromptCardList 
-            data={searchResults}
-            handleTagClick={handleTagClick}
-          />
+          <div className="mt-16 prompt_layout">
+            {
+              searchResults.map((result) => (
+                  <PromptCard 
+                    key={result._id}
+                    post={result}
+                    handleTagClick={handleTagClick}
+                  />
+              ))
+            }
+          </div>
         ) : (
           <div className="mt-16 prompt_layout">
             {
