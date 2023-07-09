@@ -7,10 +7,8 @@ const DeleteMsg = ({ closeToast, toastProps, posts, postId, setPosts }) => (
           await fetch(`/api/prompt/${postId.toString()}`, {
             method: 'DELETE',
           });
-
           const filteredPosts = posts.filter((p) => p._id !== postId);
           setPosts(filteredPosts);
-          closeToast();
         } catch (error) {
           console.log(error);
         }
